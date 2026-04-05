@@ -90,7 +90,16 @@ function createHeading(as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6") {
     children,
     ...props
   }: Omit<React.ComponentProps<typeof HeadingLink>, "as" | "id">) => {
-    const slug = slugify(children as string);
+    // Extract text content from children (handles both strings and JSX)
+    let textContent = "";
+    if (typeof children === "string") {
+      textContent = children;
+    } else if (Array.isArray(children)) {
+      textContent = children.map(child => 
+        typeof child === "string" ? child : ""
+      ).join("");
+    }
+    const slug = slugify(textContent);
     return (
       <HeadingLink marginTop="24" marginBottom="12" as={as} id={slug} {...props}>
         {children}
